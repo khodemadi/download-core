@@ -155,6 +155,8 @@ let progress = Arc::new(Mutex::new(initial));
         let semaphore = Arc::new(tokio::sync::Semaphore::new(options.stars.connections()));
         let mut tasks = Vec::new();
 
+        let _ = progress_tx.send(p.clone());
+
         for segment_index in 0..manifest_arc.lock().await.segments.len() {
             if manifest_arc.lock().await.completed[segment_index] {
                 continue;
