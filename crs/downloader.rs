@@ -56,6 +56,11 @@ pub struct DownloadManager {
     client: Client,
 }
 
+pub struct DownloadHandle {
+    pub progress: tokio::sync::watch::Receiver<DownloadProgress>,
+    pub task: tokio::task::JoinHandle<Result<DownloadReport>>,
+}
+
 impl DownloadManager {
     pub fn new() -> Result<Self> {
         let client = Client::builder()
