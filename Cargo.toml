@@ -6,8 +6,8 @@ edition = "2024"
 authors = ["khodemadi"]
 license = "MIT"
 description = "A fast, resumable, segmented HTTP download core written in Rust."
-repository = "https://github.com/khodemadi/download-core"
 homepage = "https://github.com/khodemadi/download-core"
+repository = "https://github.com/khodemadi/download-core"
 readme = "README.md"
 
 keywords = [
