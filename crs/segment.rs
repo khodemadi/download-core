@@ -1,40 +1,56 @@
-use std::ops::Range;
+use serde::{Deserialize, Serialize};
 
 /// Represents a single download segment.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Segment {
     /// Segment index.
-    pub id: usize,
+    pub index: usize,
 
-    /// Byte range assigned to this segment.
-    pub range: Range<u64>,
+    /// Start byte (inclusive).
+    pub start: u64,
 
-    /// Downloaded bytes within this segment.
-    pub downloaded: u64,
+    /// End byte (inclusive).
+    pub end: u64,
 }
 
 impl Segment {
     /// Creates a new segment.
-    pub fn new(id: usize, start: u64, end: u64) -> Self {
-        Self {
-            id,
-            range: start..end,
-            downloaded: 0,
-        }
+    pub fn new(index: usize, start: u64, end: u64) -> Self {
+        Self { index, start, end }
     }
 
-    /// Returns the segment size.
-    pub fn size(&self) -> u64 {
-        self.range.end - self.range.start
+    /// Returns the segment length in bytes.
+    pub fn len(&self) -> u64 {
+        self.end - self.start + 1
     }
 
-    /// Returns true if the segment is fully downloaded.
-    pub fn is_complete(&self) -> bool {
-        self.downloaded >= self.size()
+    /// Returns true if the segment is empty.
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+}
+
+/// Splits a file into multiple download segments.
+pub fn split_file(total_size: u64, connections: usize) -> Vec<Segment> {
+    if total_size == 0 || connections == 0 {
+        return Vec::new();
     }
 
-    /// Returns the next byte offset to request.
-    pub fn current_offset(&self) -> u64 {
-        self.range.start + self.downloaded
+    let chunk_size = total_size / connections as u64;
+    let mut segments = Vec::with_capacity(connections);
+
+    let mut start = 0;
+
+    for index in 0..connections {
+        let end = if index == connections - 1 {
+            total_size - 1
+        } else {
+            start + chunk_size - 1
+        };
+
+        segments.push(Segment::new(index, start, end));
+        start = end + 1;
     }
+
+    segments
 }
