@@ -1,144 +1,81 @@
 [package]
-name = "rust-download-core"
+name = "download-core"
 version = "0.1.0"
 edition = "2024"
 
-authors = ["Your Name <you@example.com>"]
+authors = ["khodemadi"]
 license = "MIT"
 description = "A fast, resumable, segmented HTTP download core written in Rust."
-homepage = "https://github.com/your-username/rust-download-core"
-repository = "https://github.com/your-username/rust-download-core"
-documentation = "https://docs.rs/rust-download-core"
+repository = "https://github.com/khodemadi/download-core"
+homepage = "https://github.com/khodemadi/download-core"
 readme = "README.md"
 
 keywords = [
     "download",
-    "downloader",
     "http",
     "async",
-    "tokio"
+    "tokio",
+    "network",
 ]
 
 categories = [
     "network-programming",
-    "asynchronous"
+    "asynchronous",
 ]
 
-exclude = [
-    ".github/",
-    "examples/",
-    "tests/",
-    "target/",
-]
-
-rust-version = "1.80"
-
-################################################################################
-# Dependencies
-################################################################################
+[lib]
+path = "crs/lib.rs"
 
 [dependencies]
-
-# Error Handling
-anyhow = "1"
-thiserror = "2"
-
-# Async Runtime
-tokio = { version = "1", features = [
-    "macros",
-    "rt-multi-thread",
-    "sync",
-    "time",
-    "fs",
-    "io-util"
-] }
-
-# HTTP Client
-reqwest = { version = "0.12", default-features = false, features = [
-    "rustls-tls",
-    "stream"
-] }
-
-# Streams
+anyhow = "1.0"
+bytes = "1.10"
 futures-util = "0.3"
 
-# Serialization
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = [
+    "rustls-tls",
+    "stream",
+    "gzip",
+    "brotli",
+    "deflate",
+    "http2",
+] }
 
-# URL Parsing
-url = "2"
+tokio = { version = "1.47", features = [
+    "macros",
+    "rt-multi-thread",
+    "fs",
+    "io-util",
+    "sync",
+    "time",
+] }
 
-# Buffers
-bytes = "1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 
-# Hash Verification
 sha2 = "0.10"
 
-# Logging
+thiserror = "2.0"
+
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = [
     "fmt",
-    "env-filter"
+    "env-filter",
 ] }
 
-################################################################################
-# Optional Features
-################################################################################
+url = "2.5"
 
-[features]
+[dev-dependencies]
+tokio = { version = "1.47", features = ["full"] }
 
-default = []
-
-cli = []
-
-verify = []
-
-logging = []
-
-################################################################################
-# Release Optimizations
-################################################################################
+criterion = "0.7"
 
 [profile.release]
-
 opt-level = 3
-lto = "fat"
+lto = true
 codegen-units = 1
-panic = "abort"
 strip = true
-incremental = false
-
-################################################################################
-# Dev Profile
-################################################################################
+panic = "abort"
 
 [profile.dev]
-
 opt-level = 0
 debug = true
-
-################################################################################
-# Docs.rs
-################################################################################
-
-[package.metadata.docs.rs]
-
-all-features = true
-
-################################################################################
-# Lints
-################################################################################
-
-[lints.rust]
-
-unsafe_code = "forbid"
-unused_imports = "warn"
-unused_variables = "warn"
-missing_docs = "warn"
-
-[lints.clippy]
-
-all = "warn"
-pedantic = "allow"
-cargo = "warn" 
