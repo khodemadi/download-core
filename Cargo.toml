@@ -1,1 +1,144 @@
- 
+[package]
+name = "rust-download-core"
+version = "0.1.0"
+edition = "2021"
+
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+description = "A fast, resumable, segmented HTTP download core written in Rust."
+homepage = "https://github.com/your-username/rust-download-core"
+repository = "https://github.com/your-username/rust-download-core"
+documentation = "https://docs.rs/rust-download-core"
+readme = "README.md"
+
+keywords = [
+    "download",
+    "downloader",
+    "http",
+    "async",
+    "tokio"
+]
+
+categories = [
+    "network-programming",
+    "asynchronous"
+]
+
+exclude = [
+    ".github/",
+    "examples/",
+    "tests/",
+    "target/",
+]
+
+rust-version = "1.80"
+
+################################################################################
+# Dependencies
+################################################################################
+
+[dependencies]
+
+# Error Handling
+anyhow = "1"
+thiserror = "2"
+
+# Async Runtime
+tokio = { version = "1", features = [
+    "macros",
+    "rt-multi-thread",
+    "sync",
+    "time",
+    "fs",
+    "io-util"
+] }
+
+# HTTP Client
+reqwest = { version = "0.12", default-features = false, features = [
+    "rustls-tls",
+    "stream"
+] }
+
+# Streams
+futures-util = "0.3"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# URL Parsing
+url = "2"
+
+# Buffers
+bytes = "1"
+
+# Hash Verification
+sha2 = "0.10"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = [
+    "fmt",
+    "env-filter"
+] }
+
+################################################################################
+# Optional Features
+################################################################################
+
+[features]
+
+default = []
+
+cli = []
+
+verify = []
+
+logging = []
+
+################################################################################
+# Release Optimizations
+################################################################################
+
+[profile.release]
+
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+incremental = false
+
+################################################################################
+# Dev Profile
+################################################################################
+
+[profile.dev]
+
+opt-level = 0
+debug = true
+
+################################################################################
+# Docs.rs
+################################################################################
+
+[package.metadata.docs.rs]
+
+all-features = true
+
+################################################################################
+# Lints
+################################################################################
+
+[lints.rust]
+
+unsafe_code = "forbid"
+unused_imports = "warn"
+unused_variables = "warn"
+missing_docs = "warn"
+
+[lints.clippy]
+
+all = "warn"
+pedantic = "allow"
+cargo = "warn" 
