@@ -124,11 +124,16 @@ impl DownloadManager {
             )
             .await?;
 
-        let progress = Arc::new(Mutex::new(DownloadProgress {
-            downloaded: 0,
-            total,
-            status: DownloadStatus::Starting,
-        }));
+        let initial = DownloadProgress {
+    downloaded: 0,
+    total,
+    status: DownloadStatus::Starting,
+};
+
+let (progress_tx, progress_rx) =
+    tokio::sync::watch::channel(initial.clone());
+
+let progress = Arc::new(Mutex::new(initial));
 
         let (tx, mut rx) = mpsc::channel(options.progress_buffer.max(1));
         let client = self.client.clone();
